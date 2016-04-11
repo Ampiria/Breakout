@@ -7,7 +7,7 @@ public class Ball {
     private int xPosition, yPosition;
     private int dx, dy;
     public static final int DIAMETER = 10;
-    public static final Color BALL_COLOR = Color.white;
+    public static final Color BALL_COLOR = Color.black;
 
     public Ball(int xPosition, int yPosition, int dx, int dy){
         this.xPosition = xPosition;
