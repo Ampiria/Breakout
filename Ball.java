@@ -48,12 +48,14 @@ public class Ball {
         return dy;
     }
 
+    //Moves the ball by adding the change in x (dx) and change in y (dy) to xPosition and yPosition respectively
+
     public void ballMove(){
         xPosition += dx;
         yPosition += dy;
     }
 
-    public void drawBall(Graphics g){
+    public void drawBall(Graphics2D g){
         g.setColor(BALL_COLOR);
         g.fillOval(xPosition,yPosition,DIAMETER,DIAMETER);
         g.setColor(Color.gray);

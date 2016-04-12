@@ -1,12 +1,12 @@
 /**
  * Created by nigel on 4/11/2016.
  */
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Toolkit;
+import sun.audio.AudioData;
+import sun.audio.AudioPlayer;
+import sun.audio.AudioStream;
+import sun.audio.ContinuousAudioDataStream;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,18 +15,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 
 
 public class Screen extends JPanel implements ActionListener, MouseMotionListener, MouseListener, KeyListener {
 
-    private static final long serialVersionUID = -5699255769305413877L;
     public static final int HEIGHT = 600;
-    public static final int WIDTH = 720;
+    public static final int WIDTH = 910;
 
     private int horizontalCount;
     private BufferedImage image;
@@ -34,12 +33,12 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
     private Timer time;
     private static final Font endFont = new Font(Font.SANS_SERIF, Font.BOLD, 20);
     private static final Font scoreFont = new Font(Font.SANS_SERIF, Font.BOLD, 15);
-
     private Paddle player;
     private Ball ball;
     ArrayList<ArrayList<Tiles> > bricks;
 
     //Prepares the screen
+
     public Screen(){
         super();
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -108,7 +107,7 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
             ball.setDy(ball.getDy() * -1);
             return;
         }
-        //first check if ball hit any walls
+
         if(ball.getX() >= (WIDTH - Ball.DIAMETER) || ball.getX() <= 0){
             ball.setDx(ball.getDx() * -1);
         }
@@ -119,7 +118,6 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
             ball.setDy(ball.getDy() * -1);
         }
 
-        //next handle collisions between bricks
         int brickRowsActive = 0;
         for(ArrayList<Tiles> alb : bricks){
             if(alb.size() == horizontalCount){
@@ -137,10 +135,8 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         }
     }
 
-    /**
-     * Sets the balls position to approximately the center of the screen, and
-     * deducts a point from the user. If necessary, ends the game
-     */
+    //Resets the ball after losing a life
+
     private void resetBall() {
         if(gameOver()){
             time.stop();
@@ -158,12 +154,23 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         return false;
     }
 
-    /**
-     *  Draws the screen for the game, first sets the screen up (clears it)
-     *  and then it begins by setting the entire screen to be white. Finally
-     *  it draws all of the bricks, the players paddle, and the ball on the 
-     *  screen
-     */
+    //background music made by Andrew Thompson
+    public void backgroundMusic(){
+        AudioPlayer music = AudioPlayer.player;
+        ContinuousAudioDataStream myLoop = null;
+        try {
+            AudioStream myBackgroundMusic = new AudioStream(getClass().getResourceAsStream("song.mp3"));
+            AudioData myData = myBackgroundMusic.getData();
+            myLoop = new ContinuousAudioDataStream(myData);
+        }catch(Exception error){
+            System.out.println("File Not Found");
+            System.out.println(error);
+        }
+        music.start(myLoop);
+    }
+
+
+    //Draws the screen
     @Override public void paintComponent(Graphics g){
         super.paintComponent(g);
         bufferedGraphics.clearRect(0, 0, WIDTH, HEIGHT);
@@ -171,6 +178,9 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         bufferedGraphics.fillRect(0, 0, WIDTH, HEIGHT);
         player.drawPaddle(bufferedGraphics);
         ball.drawBall(bufferedGraphics);
+        bufferedGraphics.setFont(scoreFont);
+        bufferedGraphics.drawString("Instructions: Click the mouse in order to start the game." +
+                "Move the mouse to hit the ball into the bricks until they are all destroyed.", 5,595);
         for(ArrayList<Tiles> row : bricks){
             for(Tiles b : row){
                 b.drawTiles(bufferedGraphics);
@@ -178,9 +188,9 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         }
         bufferedGraphics.setFont(scoreFont);
         bufferedGraphics.drawString("Score: " + player.getScore(), 10, 25);
-        if(gameOver() &&
-                ball.getY() >= HEIGHT){
-            bufferedGraphics.setColor(Color.black);
+        bufferedGraphics.drawString("Lives: " + player.getLives(),125,25);
+        if(gameOver() && ball.getY() >= HEIGHT){
+            bufferedGraphics.setColor(Color.red);
             bufferedGraphics.setFont(endFont);
             bufferedGraphics.drawString("Game Over!  Score: " + player.getScore(), (WIDTH/2) - 85, (HEIGHT/2));
         }

@@ -10,6 +10,7 @@ public class Tiles {
     private int     xPosition, yPosition;
     public Type   tileType;
 
+    //different types of blocks in the game
     enum Type{
         SUPER   (6, 700, Color.black),
         HIGH    (3, 150, Color.RED),
@@ -40,28 +41,29 @@ public class Tiles {
     public int getY(){  return yPosition;    }
     public Type gettileType(){ return tileType;   }
 
+    //checks if the ball hits a tile
     public boolean hitBy(Ball b){
-        //first check if it hits from the bottom or top
+
         if(b.getX() <= (xPosition + TILE_WIDTH) && b.getX() >= xPosition){
-            //hit bottom
+            //hits bottom
             if(b.getY() <= (yPosition + TILE_HEIGHT) && b.getY() >= (yPosition + (TILE_HEIGHT / 2))){
                 b.setDy(b.getDy() * -1);
                 return true;
             }
-            //hit top
+            //hits top
             else if(b.getY() >= (yPosition - Ball.DIAMETER) && b.getY() < (yPosition + (Ball.DIAMETER / 3))){
                 b.setDy(b.getDy() * -1);
                 return true;
             }
         }
-        //determines if it from a side
+
         else if(b.getY() <= (yPosition + TILE_HEIGHT) && b.getY() >= yPosition){
-            //hit right
+            //hits right
             if(b.getX() <= (xPosition + TILE_WIDTH) && b.getX() > (xPosition + (TILE_WIDTH - (Ball.DIAMETER / 2)))){
                 b.setDx(b.getDx() * -1);
                 return true;
             }
-            //hit left
+            //hits left
             else if(b.getX() >= (xPosition - Ball.DIAMETER) && b.getX() < (xPosition + (Ball.DIAMETER / 2))){
                 b.setDx(b.getDx() * -1);
                 return true;

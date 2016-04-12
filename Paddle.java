@@ -1,8 +1,8 @@
 /**
  * Created by nigel on 4/11/2016.
  */
-import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.*;
+
 
 public class Paddle {
     public static final int Y_POSITION = Screen.HEIGHT - 30;
@@ -10,9 +10,9 @@ public class Paddle {
     public static final int P_HEIGHT = 10;
     public static final Color P_COLOR = Color.black;
     private int xPosition;
-    public static final int DELTA_X = 5;
     private int score;
     private int lives;
+
 
     public Paddle(int xPosition){
         this.xPosition = xPosition;
@@ -31,7 +31,9 @@ public class Paddle {
     public void setScore(int score){ this.score = score; }
     public int getLives(){ return lives; }
     public void setLives(int lives){ this.lives = lives; }
-    
+
+
+    //checks if the ball and the paddle collide
     public boolean hitPaddle(Ball b){
         if(b.getX() <= xPosition + (P_WIDTH + 15)){
             if(b.getX() >= xPosition - 10){
@@ -45,20 +47,11 @@ public class Paddle {
         return false;
     }
 
-    public void drawPaddle(Graphics2D g){
+    public void drawPaddle(Graphics g){
         g.setColor(P_COLOR);
         g.fillRect(xPosition, Y_POSITION, P_WIDTH, P_HEIGHT);
         g.setColor(Color.gray);
         g.drawRect(xPosition, Y_POSITION, P_WIDTH, P_HEIGHT);
     }
 
-    public static void main(String[] args){
-        Ball b = new Ball(110, (Y_POSITION - (Ball.DIAMETER - 5)), 5, 5);
-        Paddle p = new Paddle(110);
-        for(int i = 1; i <= P_WIDTH; ++i){
-            b.setX(b.getX() + 1);
-            System.out.println(p.hitPaddle(b));
-        }
-        System.out.println(p.hitPaddle(b));
-    }
 }
