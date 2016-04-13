@@ -1,10 +1,7 @@
 /**
  * Created by nigel on 4/11/2016.
  */
-import sun.audio.AudioData;
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
-import sun.audio.ContinuousAudioDataStream;
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,8 +12,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -105,17 +100,20 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
     private void checkCollisions() {
         if(player.hitPaddle(ball)){
             ball.setDy(ball.getDy() * -1);
-            return;
+            ball.setBallColor(Color.green);
         }
 
         if(ball.getX() >= (WIDTH - Ball.DIAMETER) || ball.getX() <= 0){
             ball.setDx(ball.getDx() * -1);
+            ball.setBallColor(Color.red);
+
         }
         if(ball.getY() > (Paddle.Y_POSITION + Paddle.P_HEIGHT + 10)){
             resetBall();
         }
         if(ball.getY() <= 0){
             ball.setDy(ball.getDy() * -1);
+            ball.setBallColor(Color.blue);
         }
 
         int brickRowsActive = 0;
@@ -135,7 +133,7 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         }
     }
 
-    //Resets the ball after losing a life
+    //Resets the ball and paddle after losing a life
 
     private void resetBall() {
         if(gameOver()){
@@ -146,6 +144,8 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         ball.setY((HEIGHT/2) + 80);
         player.setLives(player.getLives() - 1);
         player.setScore(player.getScore() - 1000);
+        player.setX(WIDTH/2);
+        time.stop();
     }
 
     private boolean gameOver() {
@@ -154,27 +154,11 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         return false;
     }
 
-    //background music made by Andrew Thompson
-    public void backgroundMusic(){
-        AudioPlayer music = AudioPlayer.player;
-        ContinuousAudioDataStream myLoop = null;
-        try {
-            AudioStream myBackgroundMusic = new AudioStream(getClass().getResourceAsStream("song.mp3"));
-            AudioData myData = myBackgroundMusic.getData();
-            myLoop = new ContinuousAudioDataStream(myData);
-        }catch(Exception error){
-            System.out.println("File Not Found");
-            System.out.println(error);
-        }
-        music.start(myLoop);
-    }
-
-
     //Draws the screen
     @Override public void paintComponent(Graphics g){
         super.paintComponent(g);
         bufferedGraphics.clearRect(0, 0, WIDTH, HEIGHT);
-        bufferedGraphics.setColor(Color.WHITE);
+        bufferedGraphics.setColor(Color.ORANGE);
         bufferedGraphics.fillRect(0, 0, WIDTH, HEIGHT);
         player.drawPaddle(bufferedGraphics);
         ball.drawBall(bufferedGraphics);
@@ -225,7 +209,11 @@ public class Screen extends JPanel implements ActionListener, MouseMotionListene
         if(time.isRunning()){
             return;
         }
+        if(time.isRunning() == false && player.getLives()>0){
+            time.start();
+        }
         time.start();
+
     }
 
     public static void main(String[] args){

@@ -5,15 +5,19 @@ import java.awt.*;
  */
 public class Ball {
     private int xPosition, yPosition;
-    private int dx, dy;
+    private double dx, dy;
     public static final int DIAMETER = 10;
-    public static final Color BALL_COLOR = Color.black;
+    public static Color ballColor = Color.black;
 
     public Ball(int xPosition, int yPosition, int dx, int dy){
         this.xPosition = xPosition;
         this.yPosition = yPosition;
         this.dx = dx;
         this.dy = dy;
+    }
+
+    public static void setBallColor(Color ballColor) {
+        Ball.ballColor = ballColor;
     }
 
     public void setX(int xPosition){
@@ -24,11 +28,11 @@ public class Ball {
         this.yPosition = yPosition;
     }
 
-    public void setDx(int dx) {
+    public void setDx(double dx) {
         this.dx = dx;
     }
 
-    public void setDy(int dy) {
+    public void setDy(double dy) {
         this.dy = dy;
     }
 
@@ -40,11 +44,11 @@ public class Ball {
         return yPosition;
     }
 
-    public int getDx(){
+    public double getDx(){
         return dx;
     }
 
-    public int getDy() {
+    public double getDy() {
         return dy;
     }
 
@@ -56,7 +60,7 @@ public class Ball {
     }
 
     public void drawBall(Graphics2D g){
-        g.setColor(BALL_COLOR);
+        g.setColor(ballColor);
         g.fillOval(xPosition,yPosition,DIAMETER,DIAMETER);
         g.setColor(Color.gray);
         g.drawOval(xPosition,yPosition,DIAMETER,DIAMETER);
